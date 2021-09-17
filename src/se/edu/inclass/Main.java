@@ -15,12 +15,23 @@ public class Main {
     public static void main(String[] args) {
         DataManager dm = new DataManager("./data/data.txt");
         ArrayList<Task> tasksData = dm.loadData();
+//
+//        System.out.println("Printing deadlines");
+//        printDeadlines(tasksData);
+//
+//        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
+//        printDeadlinesUsingStream(tasksData);
+        ArrayList<Task> filteredList = filterTasksByString(tasksData, "11");
+        printData(filteredList);
 
-        System.out.println("Printing deadlines");
-        printDeadlines(tasksData);
+    }
 
-        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
+    public static ArrayList<Task> filterTasksByString(ArrayList<Task> tasks, String filterString) {
+        ArrayList<Task> filteredList = (ArrayList<Task>) tasks.stream()
+                .filter((t) -> t.getDescription().contains(filterString))
+                .collect(Collectors.toList());
 
+        return filteredList;
     }
 
     private static int countDeadlines(ArrayList<Task> tasksData) {
@@ -45,5 +56,15 @@ public class Main {
                 System.out.println(t);
             }
         }
+    }
+
+    /*
+     * Lambda: functionality vs creating class etc
+     */
+    public static void printDeadlinesUsingStream(ArrayList<Task> tasks) {
+        tasks.stream()
+                .filter((t) -> t instanceof Deadline)
+                .sorted((a, b) -> a.getDescription().toLowerCase().compareTo(b.getDescription().toLowerCase()))
+                .forEach(System.out::println);
     }
 }
